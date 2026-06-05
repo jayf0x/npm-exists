@@ -35,6 +35,12 @@ const url = await npmExists('react', { silent: true })
 ```
 
 ```js
+// Full metadata (GET instead of HEAD)
+const meta = await npmExists('react', { full: true })
+// → { name, description, 'dist-tags', versions, ... } | false
+```
+
+```js
 // Build your own fetch
 import { getNpmUrl } from '@jayf0x/npm-exists'
 const url = getNpmUrl('react') // https://registry.npmjs.org/react
@@ -58,10 +64,10 @@ Exit codes: `0` exists · `1` not found · `2` bad usage
 | Param | Type | Description |
 |---|---|---|
 | `pkg` | `string` | Package name |
-| `registryOrOptions` | `string \| { registry?, silent? }` | Registry URL or options object |
-| `options` | `{ silent? }` | When `silent: true`, errors return `false` instead of throwing |
+| `registryOrOptions` | `string \| { registry?, silent?, full? }` | Registry URL or options object |
+| `options` | `{ silent?, full? }` | `silent`: errors → `false`; `full`: GET full metadata instead of HEAD |
 
-Returns `Promise<string \| false>` — the npm page URL or `false` if not found.
+Returns `Promise<string \| Record<string, unknown> \| false>`
 
 ### `getNpmUrl(pkg, registry?)`
 

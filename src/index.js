@@ -20,30 +20,37 @@ function getPageUrl(pkg, registry) {
 
 /**
  * Checks if an npm package exists.
- * Returns the npm package URL on success, false if not found.
+ *
+ * By default uses HEAD (lightweight — no body transferred).
+ * Pass `full: true` to fetch the full registry metadata instead.
  *
  * @param {string} pkg
- * @param {string | { registry?: string, silent?: boolean }} [registryOrOptions]
- * @param {{ silent?: boolean }} [options]
- * @returns {Promise<string|false>}
+ * @param {string | { registry?: string, silent?: boolean, full?: boolean }} [registryOrOptions]
+ * @param {{ silent?: boolean, full?: boolean }} [options]
+ * @returns {Promise<string | Record<string, unknown> | false>}
  */
 export async function npmExists(pkg, registryOrOptions, options) {
   let registry = DEFAULT_REGISTRY
   let silent = false
+  let full = false
 
   if (typeof registryOrOptions === 'string') {
     registry = registryOrOptions
     silent = options?.silent ?? false
+    full = options?.full ?? false
   } else if (registryOrOptions != null) {
     registry = registryOrOptions.registry ?? DEFAULT_REGISTRY
     silent = registryOrOptions.silent ?? false
+    full = registryOrOptions.full ?? false
   }
 
   try {
-    const res = await fetch(getNpmUrl(pkg, registry))
+    const res = await fetch(getNpmUrl(pkg, registry), {
+      method: full ? 'GET' : 'HEAD',
+    })
     if (res.status === 404) return false
     if (!res.ok) throw new Error(`npm registry error: HTTP ${res.status}`)
-    return getPageUrl(pkg, registry)
+    return full ? res.json() : getPageUrl(pkg, registry)
   } catch (err) {
     if (silent) return false
     throw err
