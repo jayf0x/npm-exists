@@ -2,35 +2,43 @@
 
 ## What this package does
 
-`npm-exists` checks whether an npm package name is registered on the npm registry (or any compatible registry). It returns the full package metadata on success, or `false` if the package does not exist.
+`npm-exists` checks whether an npm package name is registered on the npm registry (or any compatible registry). Uses a lightweight HEAD request — no body transferred. Returns the npm page URL on success, `false` if not found.
 
 ## Quick usage for agents
 
 ```js
 import npmExists, { getNpmUrl } from '@jayf0x/npm-exists'
 
-// Check existence + get metadata
-const result = await npmExists('react')
-// result → { name, description, 'dist-tags': { latest: '19.1.0' }, versions, ... } | false
+// Returns URL string or false
+const url = await npmExists('react')
+// → 'https://www.npmjs.com/package/react' | false
 
 // Build a URL for use with any HTTP client
-const url = getNpmUrl('react') // https://registry.npmjs.org/react
+const registryUrl = getNpmUrl('react') // https://registry.npmjs.org/react
 ```
 
 ## Key facts
 
-- **Zero runtime dependencies** — only needs native `fetch` (Node 18+)
-- **Returns `false`** (not an error) when a package does not exist (HTTP 404)
-- **Throws** on unexpected registry errors (5xx, network failure, etc.)
-- **Custom registry**: pass a second argument to both `npmExists` and `getNpmUrl`
-- **Scoped packages** (`@scope/pkg`) are supported — the name is `encodeURIComponent`-encoded in the URL
+- **Zero runtime dependencies** — native `fetch` only (Node 18+)
+- **HEAD request** — no body transferred, just a status check
+- **Returns `false`** (not an error) for HTTP 404
+- **Throws** on unexpected errors (5xx, network failure) unless `silent: true`
+- **Custom registry**: pass as second string arg or `{ registry }` option
+- **Scoped packages** (`@scope/pkg`) supported
 
 ## Exports
 
 | Name | Signature | Returns |
 |------|-----------|---------|
-| `npmExists` (default) | `(pkg: string, registry?: string) => Promise<object \| false>` | metadata or `false` |
-| `getNpmUrl` | `(pkg: string, registry?: string) => string` | registry URL |
+| `npmExists` (default) | `(pkg, registryOrOptions?, options?) => Promise<string \| false>` | npm page URL or `false` |
+| `getNpmUrl` | `(pkg, registry?) => string` | registry API URL |
+
+## Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `registry` | `string` | `https://registry.npmjs.org` | Custom registry base URL |
+| `silent` | `boolean` | `false` | Return `false` instead of throwing on error |
 
 ## CLI
 

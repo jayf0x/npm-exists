@@ -4,7 +4,7 @@ Check if an npm package name is taken. Zero dependencies, uses native fetch.
 
 ## Summary
 
-`npm-exists` is a minimal Node.js library and CLI tool that queries the npm registry (or any npm-compatible registry) to check whether a package name is already registered. It returns the full registry metadata object on success, or `false` for a 404.
+`npm-exists` is a minimal Node.js library and CLI tool that queries the npm registry (or any npm-compatible registry) to check whether a package name is already registered. Uses a HEAD request (no body). Returns the npm page URL string on success, or `false` for a 404.
 
 ## Installation
 
@@ -15,15 +15,23 @@ npm install @jayf0x/npm-exists
 ```js
 import npmExists, { getNpmUrl } from '@jayf0x/npm-exists'
 
-// Returns metadata object or false
-const result = await npmExists('react')
-
-// Returns registry URL string
-const url = getNpmUrl('react') // https://registry.npmjs.org/react
+// Returns URL string or false
+const url = await npmExists('react')
+// → 'https://www.npmjs.com/package/react' | false
 
 // Custom registry
-const result = await npmExists('my-pkg', 'https://my.private.registry.io')
+const url = await npmExists('my-pkg', 'https://my.private.registry.io')
+
+// Suppress errors
+const url = await npmExists('react', { silent: true })
+
+// Returns registry API URL string
+const apiUrl = getNpmUrl('react') // https://registry.npmjs.org/react
 ```
+
+## Return type
+
+`Promise<string | false>` — always. String = npm page URL, false = not found.
 
 ## CLI
 
@@ -39,4 +47,4 @@ Node >= 18 (native fetch). Zero runtime dependencies.
 
 ## Source
 
-https://github.com/jayverstraete/npm-exists
+https://github.com/jayf0x/npm-exists

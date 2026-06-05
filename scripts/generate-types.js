@@ -7,19 +7,17 @@ export interface NpmExistsOptions {
   registry?: string
   /** Suppress errors — network/registry failures return false instead of throwing */
   silent?: boolean
-  /** Fetch full registry metadata instead of a lightweight HEAD check */
-  full?: boolean
 }
 
 /**
  * Checks if an npm package exists.
- * Returns the npm page URL by default, or full registry metadata with \`full: true\`.
+ * Returns the npm page URL, or false if not found.
  */
 export declare function npmExists(
   pkg: string,
   registryOrOptions?: string | NpmExistsOptions,
-  options?: Pick<NpmExistsOptions, 'silent' | 'full'>
-): Promise<string | Record<string, unknown> | false>
+  options?: NpmExistsOptions
+): Promise<string | false>
 
 export default npmExists
 `
