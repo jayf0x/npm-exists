@@ -6,7 +6,6 @@
 [![npm downloads](https://img.shields.io/npm/dm/@jayf0x/npm-exists)](https://www.npmjs.com/package/@jayf0x/npm-exists)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@jayf0x/npm-exists)](https://bundlephobia.com/package/@jayf0x/npm-exists)
 [![license](https://img.shields.io/npm/l/@jayf0x/npm-exists)](./LICENSE)
-[![CI](https://github.com/jayf0x/npm-exists/actions/workflows/release.yml/badge.svg)](https://github.com/jayf0x/npm-exists/actions/workflows/release.yml)
 
 Zero dependencies. Returns the npm package URL or `false`.
 
