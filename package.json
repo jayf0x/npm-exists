@@ -26,7 +26,8 @@
     "build": "vite build && node scripts/generate-types.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build && npm test"
+    "release": "bash publish-npm.sh",
+    "prepublishOnly": "bun run build && bun test"
   },
   "keywords": [
     "npm",

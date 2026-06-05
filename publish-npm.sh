@@ -2,7 +2,7 @@
 set -euo pipefail
 set +x  # never allow xtrace to print tokens
 
-export PATH="$HOME/.nvm/versions/node/v20.19.6/bin:$PATH"
+export PATH="$HOME/.bun/bin:$HOME/.nvm/versions/node/v20.19.6/bin:$PATH"
 
 # ── keychain ──────────────────────────────────────────────────────────────────
 
@@ -29,7 +29,7 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
 fi
 
 # ── version bump ──────────────────────────────────────────────────────────────
-CURRENT=$(npm pkg get version --json | tr -d '"')
+CURRENT=$(bun -e "import pkg from './package.json' with {type:'json'}; process.stdout.write(pkg.version)")
 MAJOR=$(echo "$CURRENT" | cut -d. -f1)
 MINOR=$(echo "$CURRENT" | cut -d. -f2)
 PATCH=$(echo "$CURRENT" | cut -d. -f3)
@@ -52,18 +52,25 @@ fi
 
 echo "Bumping $CURRENT → $NEW"
 
-npm pkg set version="$NEW"
+bun -e "
+  import { readFileSync, writeFileSync } from 'fs';
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+  pkg.version = '$NEW';
+  writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+"
 
 # ── build + test ──────────────────────────────────────────────────────────────
-npm run build
-npm test
+bun run build
+bun test
 
 # ── publish ───────────────────────────────────────────────────────────────────
 echo "Publishing to npm..."
-npm publish --userconfig "$TMPRC" --registry https://registry.npmjs.org --access public
+_TOK=$(grep 'npmjs.org' "$TMPRC" | sed 's/.*_authToken=//')
+BUN_AUTH_TOKEN="$_TOK" bun publish --access public
+unset _TOK
 
 # ── commit + tag + push ───────────────────────────────────────────────────────
-git add package.json package-lock.json
+git add package.json bun.lock
 git commit -m "chore: release $NEW"
 git tag "$TAG"
 git push origin HEAD
@@ -81,35 +88,35 @@ else
   COMMIT_LOG=$(git log --oneline "$TAG" | head -20)
 fi
 
-echo ""
-echo "Updating changelog.md (Claude Code)..."
+# echo ""
+# echo "Updating changelog.md (Claude Code)..."
 
-claude \
-  --model haiku \
-  --no-session-persistence \
-  -p "Update changelog.md for a new release of npm-exists.
+# claude \
+#   --model haiku \
+#   --no-session-persistence \
+#   -p "Update changelog.md for a new release of npm-exists.
 
-New version: $NEW
-Previous tag: ${PREV_TAG:-none}
+# New version: $NEW
+# Previous tag: ${PREV_TAG:-none}
 
-Commits since ${PREV_TAG:-beginning}:
-$COMMIT_LOG
+# Commits since ${PREV_TAG:-beginning}:
+# $COMMIT_LOG
 
-Instructions:
-- Read changelog.md first (create it if it doesn't exist, with a '# Changelog' heading)
-- Add a new '## v$NEW' section at the very top (directly below the '# Changelog' heading)
-- Only include meaningful changes: features, bug fixes, breaking changes, perf improvements
-- Skip commits that are only: chore, deploy, dist, docs, README, format, CI internals
-- Each bullet: concise, imperative tense, 1 line (e.g. 'Add support for scoped packages')
-- If zero meaningful commits exist, write '- Internal/infrastructure changes only'
-- Do NOT modify any existing changelog entries" \
-  --allowedTools "Read,Edit,Write" 2>&1
+# Instructions:
+# - Read changelog.md first (create it if it doesn't exist, with a '# Changelog' heading)
+# - Add a new '## v$NEW' section at the very top (directly below the '# Changelog' heading)
+# - Only include meaningful changes: features, bug fixes, breaking changes, perf improvements
+# - Skip commits that are only: chore, deploy, dist, docs, README, format, CI internals
+# - Each bullet: concise, imperative tense, 1 line (e.g. 'Add support for scoped packages')
+# - If zero meaningful commits exist, write '- Internal/infrastructure changes only'
+# - Do NOT modify any existing changelog entries" \
+#   --allowedTools "Read,Edit,Write" 2>&1
 
-if ! git diff --quiet changelog.md 2>/dev/null; then
-  git add changelog.md
-  git commit -m "docs: update changelog for $NEW"
-  git push origin HEAD
-  echo "✓ changelog.md committed and pushed"
-else
-  echo "  (no changelog changes)"
-fi
+# if ! git diff --quiet changelog.md 2>/dev/null; then
+#   git add changelog.md
+#   git commit -m "docs: update changelog for $NEW"
+#   git push origin HEAD
+#   echo "✓ changelog.md committed and pushed"
+# else
+#   echo "  (no changelog changes)"
+# fi
