@@ -2,10 +2,10 @@
 
 > Check if an npm package name is taken. Zero dependencies, uses native `fetch`.
 
-[![npm version](https://img.shields.io/npm/v/npm-exists.svg)](https://npmjs.com/package/npm-exists)
-[![npm downloads](https://img.shields.io/npm/dm/npm-exists.svg)](https://npmjs.com/package/npm-exists)
-[![license](https://img.shields.io/npm/l/npm-exists.svg)](LICENSE)
-[![node](https://img.shields.io/node/v/npm-exists.svg)](package.json)
+[![npm version](https://img.shields.io/npm/v/@jayf0x/npm-exists.svg)](https://npmjs.com/package/@jayf0x/npm-exists)
+[![npm downloads](https://img.shields.io/npm/dm/@jayf0x/npm-exists.svg)](https://npmjs.com/package/@jayf0x/npm-exists)
+[![license](https://img.shields.io/npm/l/@jayf0x/npm-exists.svg)](LICENSE)
+[![node](https://img.shields.io/node/v/@jayf0x/npm-exists.svg)](package.json)
 
 ## Features
 
@@ -19,7 +19,7 @@
 ## Install
 
 ```sh
-npm install npm-exists
+npm install @jayf0x/npm-exists
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ npm install npm-exists
 ### API
 
 ```js
-import npmExists from 'npm-exists'
+import npmExists from '@jayf0x/npm-exists'
 
 // Check if a package exists — returns metadata or false
 const details = await npmExists('react')
@@ -45,7 +45,7 @@ const details = await npmExists('my-pkg', 'https://my.private.registry.io')
 
 ```js
 // Build your own fetch — getNpmUrl lets you use axios, ky, etc.
-import { getNpmUrl } from 'npm-exists'
+import { getNpmUrl } from '@jayf0x/npm-exists'
 import axios from 'axios'
 
 const url = getNpmUrl('react')
@@ -80,7 +80,7 @@ npm-exists my-pkg https://my.private.registry.io
 ### One-off via npx
 
 ```sh
-npx npm-exists react
+npx @jayf0x/npm-exists react
 ```
 
 ## API Reference

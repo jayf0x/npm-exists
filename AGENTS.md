@@ -7,7 +7,7 @@
 ## Quick usage for agents
 
 ```js
-import npmExists, { getNpmUrl } from 'npm-exists'
+import npmExists, { getNpmUrl } from '@jayf0x/npm-exists'
 
 // Check existence + get metadata
 const result = await npmExists('react')

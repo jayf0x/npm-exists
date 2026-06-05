@@ -8,12 +8,12 @@ Check if an npm package name is taken. Zero dependencies, uses native fetch.
 
 ## Installation
 
-npm install npm-exists
+npm install @jayf0x/npm-exists
 
 ## Core API
 
 ```js
-import npmExists, { getNpmUrl } from 'npm-exists'
+import npmExists, { getNpmUrl } from '@jayf0x/npm-exists'
 
 // Returns metadata object or false
 const result = await npmExists('react')
