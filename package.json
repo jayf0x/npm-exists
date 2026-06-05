@@ -1,6 +1,6 @@
 {
   "name": "@jayf0x/npm-exists",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Check if an npm package name is taken. Zero dependencies, uses native fetch.",
   "type": "module",
   "main": "./dist/index.cjs",
