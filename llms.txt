@@ -1,0 +1,42 @@
+# npm-exists
+
+Check if an npm package name is taken. Zero dependencies, uses native fetch.
+
+## Summary
+
+`npm-exists` is a minimal Node.js library and CLI tool that queries the npm registry (or any npm-compatible registry) to check whether a package name is already registered. It returns the full registry metadata object on success, or `false` for a 404.
+
+## Installation
+
+npm install npm-exists
+
+## Core API
+
+```js
+import npmExists, { getNpmUrl } from 'npm-exists'
+
+// Returns metadata object or false
+const result = await npmExists('react')
+
+// Returns registry URL string
+const url = getNpmUrl('react') // https://registry.npmjs.org/react
+
+// Custom registry
+const result = await npmExists('my-pkg', 'https://my.private.registry.io')
+```
+
+## CLI
+
+```
+npm-exists <package-name> [registry-url]
+```
+
+Exit 0 = exists, Exit 1 = not found.
+
+## Requirements
+
+Node >= 18 (native fetch). Zero runtime dependencies.
+
+## Source
+
+https://github.com/jayverstraete/npm-exists
