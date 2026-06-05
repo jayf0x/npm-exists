@@ -3,7 +3,16 @@ import { writeFileSync } from 'fs'
 
 const dts = `export declare function getNpmUrl(pkg: string, registry?: string): string
 
-export declare function npmExists(pkg: string, registry?: string): Promise<Record<string, unknown> | false>
+export interface NpmExistsOptions {
+  registry?: string
+  silent?: boolean
+}
+
+export declare function npmExists(
+  pkg: string,
+  registryOrOptions?: string | NpmExistsOptions,
+  options?: Pick<NpmExistsOptions, 'silent'>
+): Promise<string | false>
 
 export default npmExists
 `

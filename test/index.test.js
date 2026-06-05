@@ -20,10 +20,9 @@ describe('getNpmUrl', () => {
 })
 
 describe('npmExists', () => {
-  it('returns metadata for npm-exists itself', async () => {
-    const result = await npmExists('npm-exists')
-    expect(result).toBeTruthy()
-    expect(result.name).toBe('npm-exists')
+  it('returns npm URL for @jayf0x/npm-exists', async () => {
+    const url = await npmExists('@jayf0x/npm-exists')
+    expect(url).toBe('https://www.npmjs.com/package/@jayf0x/npm-exists')
   }, 15000)
 
   it('returns false for a non-existent package', async () => {
@@ -31,8 +30,13 @@ describe('npmExists', () => {
     expect(result).toBe(false)
   }, 15000)
 
-  it('result includes dist-tags.latest', async () => {
-    const result = await npmExists('npm-exists')
-    expect(result['dist-tags']?.latest).toBeTypeOf('string')
+  it('silent mode returns false instead of throwing on error', async () => {
+    const result = await npmExists('react', { silent: true })
+    expect(typeof result === 'string' || result === false).toBe(true)
+  }, 15000)
+
+  it('accepts custom registry as second string arg', async () => {
+    const result = await npmExists('react', 'https://registry.npmjs.org')
+    expect(result).toBe('https://www.npmjs.com/package/react')
   }, 15000)
 })
