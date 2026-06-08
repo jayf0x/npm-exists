@@ -1,6 +1,6 @@
 {
   "name": "@jayf0x/npm-exists",
-  "version": "2.1.1",
+  "version": "2.1.0",
   "description": "The fastest way to check if an npm package exists. Zero dependencies, lightweight, and uses ultra-fast HTTP HEAD requests.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -52,11 +52,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jayF0x/npm-exists.git"
+    "url": "https://github.com/jayf0x/npm-exists"
   },
-  "homepage": "https://github.com/jayF0x/npm-exists#readme",
+  "homepage": "https://github.com/jayf0x/npm-exists#readme",
   "bugs": {
-    "url": "https://github.com/jayF0x/npm-exists/issues"
+    "url": "https://github.com/jayf0x/npm-exists/issues"
   },
   "engines": {
     "node": ">=18"
