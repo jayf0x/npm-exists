@@ -1,6 +1,6 @@
 {
   "name": "@jayf0x/npm-exists",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "The fastest way to check if an npm package exists. Zero dependencies, lightweight, and uses ultra-fast HTTP HEAD requests.",
   "type": "module",
   "main": "./dist/index.cjs",
