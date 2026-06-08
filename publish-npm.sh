@@ -66,7 +66,7 @@ bun test
 # ── publish ───────────────────────────────────────────────────────────────────
 echo "Publishing to npm..."
 
-NPM_CONFIG_USERCONFIG="$TMPRC" npm publish --access public --ignore-scripts
+NPM_CONFIG_USERCONFIG="$TMPRC" npm publish --access public --ignore-scripts --provenance
 
 # ── commit + tag + push ───────────────────────────────────────────────────────
 git add package.json bun.lock

@@ -1,13 +1,15 @@
 # npm-exists
 
-> Check if an npm package name is taken.
+```
+⚡ HEAD → 200? true. 404? false. Done.
+```
 
 [![npm version](https://img.shields.io/npm/v/@jayf0x/npm-exists)](https://www.npmjs.com/package/@jayf0x/npm-exists)
 [![npm downloads](https://img.shields.io/npm/dm/@jayf0x/npm-exists)](https://www.npmjs.com/package/@jayf0x/npm-exists)
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@jayf0x/npm-exists)](https://bundlephobia.com/package/@jayf0x/npm-exists)
 [![license](https://img.shields.io/npm/l/@jayf0x/npm-exists)](./LICENSE)
 
-Zero dependencies. Returns the npm package URL or `false`.
+The simplest, fastest possible npm package existence check. One HEAD request. No body. No regex. No deps.
 
 ## Install
 
@@ -20,52 +22,52 @@ npm install @jayf0x/npm-exists
 ```js
 import npmExists from '@jayf0x/npm-exists'
 
-const url = await npmExists('react')
-// 'https://www.npmjs.com/package/react' | false
+await npmExists('react')      // true
+await npmExists('not-a-pkg')  // false
 ```
 
 ```js
 // Custom registry
-const url = await npmExists('my-pkg', 'https://my.private.registry.io')
+await npmExists('my-pkg', { registry: 'https://my.private.registry.io' })
+
+// Suppress network errors
+await npmExists('react', { silent: true })
 ```
 
 ```js
-// Suppress errors (network failures return false instead of throwing)
-const url = await npmExists('react', { silent: true })
-```
-
-```js
-// Build your own fetch
+// Get the registry URL (useful with axios, ky, etc.)
 import { getNpmUrl } from '@jayf0x/npm-exists'
-const url = getNpmUrl('react') // https://registry.npmjs.org/react
+getNpmUrl('react')        // 'https://registry.npmjs.org/react'
+getNpmUrl('@types/node')  // 'https://registry.npmjs.org/%40types%2Fnode'
 ```
 
 ## CLI
 
 ```sh
 npx @jayf0x/npm-exists react
-# ✓ react@19.1.0 exists on npm
+# ✓ react exists on npm
 
-npm-exists my-pkg https://my.private.registry.io
+npm-exists my-pkg
+# ✗ my-pkg is not registered on npm
 ```
 
 Exit codes: `0` exists · `1` not found · `2` bad usage
 
 ## API
 
-### `npmExists(pkg, registryOrOptions?, options?)`
+### `npmExists(pkg, options?)`
 
-| Param | Type | Description |
-|---|---|---|
-| `pkg` | `string` | Package name |
-| `registryOrOptions` | `string \| { registry?, silent? }` | Registry URL or options object |
-| `options` | `{ silent? }` | `silent: true` returns `false` instead of throwing on error |
+| Param | Type | Default | Description |
+|---|---|---|---|
+| `pkg` | `string` | — | Package name |
+| `options.registry` | `string` | `'https://registry.npmjs.org'` | Custom registry URL |
+| `options.silent` | `boolean` | `false` | Return `false` on errors instead of throwing |
 
-Returns `Promise<string \| false>`
+Returns `Promise<boolean>`
 
 ### `getNpmUrl(pkg, registry?)`
 
-Returns the registry API URL. Useful with custom HTTP clients like axios or ky.
+Returns the registry API URL. Use this directly with your own HTTP client.
 
 ## License
 

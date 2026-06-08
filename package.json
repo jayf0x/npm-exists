@@ -1,7 +1,7 @@
 {
   "name": "@jayf0x/npm-exists",
-  "version": "2.0.6",
-  "description": "Check if an npm package name is taken. Zero dependencies, uses native fetch.",
+  "version": "2.1.0",
+  "description": "The fastest way to check if an npm package exists. Zero dependencies, lightweight, and uses ultra-fast HTTP HEAD requests.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

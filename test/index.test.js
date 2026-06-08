@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { npmExists, getNpmUrl } from '../src/index.js'
+
+afterEach(() => vi.unstubAllGlobals())
 
 describe('getNpmUrl', () => {
   it('returns default registry URL', () => {
@@ -20,21 +22,35 @@ describe('getNpmUrl', () => {
 })
 
 describe('npmExists', () => {
-  it('returns npm URL for @jayf0x/npm-exists', async () => {
-    const url = await npmExists('@jayf0x/npm-exists')
-    expect(url).toBe('https://www.npmjs.com/package/@jayf0x/npm-exists')
+  it('returns true for existing package', async () => {
+    expect(await npmExists('@jayf0x/npm-exists')).toBe(true)
   }, 15000)
 
-  it('returns false for a non-existent package', async () => {
+  it('returns false for non-existent package', async () => {
     expect(await npmExists('this-package-xyz-does-not-exist-99999')).toBe(false)
   }, 15000)
 
-  it('accepts custom registry as second string arg', async () => {
-    expect(await npmExists('react', 'https://registry.npmjs.org')).toBe('https://www.npmjs.com/package/react')
+  it('accepts custom registry option', async () => {
+    expect(await npmExists('react', { registry: 'https://registry.npmjs.org' })).toBe(true)
   }, 15000)
 
-  it('silent mode returns string or false, never throws', async () => {
+  it('silent mode returns boolean, never throws', async () => {
     const result = await npmExists('react', { silent: true })
-    expect(result === false || typeof result === 'string').toBe(true)
+    expect(typeof result).toBe('boolean')
   }, 15000)
+
+  it('returns false for 404', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ status: 404, ok: false }))
+    expect(await npmExists('no-such-pkg')).toBe(false)
+  })
+
+  it('throws on registry error', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ status: 500, ok: false }))
+    await expect(npmExists('react')).rejects.toThrow('HTTP 500')
+  })
+
+  it('silent mode swallows registry errors', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ status: 500, ok: false }))
+    expect(await npmExists('react', { silent: true })).toBe(false)
+  })
 })

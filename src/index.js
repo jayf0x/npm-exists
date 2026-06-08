@@ -1,5 +1,4 @@
 const DEFAULT_REGISTRY = 'https://registry.npmjs.org'
-const NPM_PAGE_BASE = 'https://www.npmjs.com/package'
 
 /**
  * Returns the registry API URL for a package.
@@ -8,42 +7,30 @@ const NPM_PAGE_BASE = 'https://www.npmjs.com/package'
  * @returns {string}
  */
 export function getNpmUrl(pkg, registry = DEFAULT_REGISTRY) {
-  return `${registry.replace(/\/$/, '')}/${encodeURIComponent(pkg)}`
-}
-
-function getPageUrl(pkg, registry) {
-  const base = (!registry || registry === DEFAULT_REGISTRY)
-    ? NPM_PAGE_BASE
-    : `${registry.replace(/\/$/, '')}/package`
-  return `${base}/${pkg}`
+  const base = registry.endsWith('/') ? registry : `${registry}/`
+  return new URL(encodeURIComponent(pkg), base).toString()
 }
 
 /**
- * Checks if an npm package exists.
- * Uses HEAD (no body transferred). Returns the npm page URL or false.
+ * Checks if an npm package exists via a lightweight HEAD request.
  *
- * @param {string} pkg
- * @param {string | { registry?: string, silent?: boolean }} [registryOrOptions]
- * @param {{ silent?: boolean }} [options]
- * @returns {Promise<string | false>}
+ * @param {string} pkg - Package name (e.g. 'react' or '@types/node')
+ * @param {Object} [options]
+ * @param {string} [options.registry] - Custom npm registry URL
+ * @param {boolean} [options.silent=false] - Return false on network errors instead of throwing
+ * @returns {Promise<boolean>}
  */
-export async function npmExists(pkg, registryOrOptions, options) {
-  let registry = DEFAULT_REGISTRY
-  let silent = false
-
-  if (typeof registryOrOptions === 'string') {
-    registry = registryOrOptions
-    silent = options?.silent ?? false
-  } else if (registryOrOptions != null) {
-    registry = registryOrOptions.registry ?? DEFAULT_REGISTRY
-    silent = registryOrOptions.silent ?? false
-  }
+export async function npmExists(pkg, options = {}) {
+  const {
+    registry = DEFAULT_REGISTRY,
+    silent = false,
+  } = options
 
   try {
     const res = await fetch(getNpmUrl(pkg, registry), { method: 'HEAD' })
     if (res.status === 404) return false
     if (!res.ok) throw new Error(`npm registry error: HTTP ${res.status}`)
-    return getPageUrl(pkg, registry)
+    return true
   } catch (err) {
     if (silent) return false
     throw err
