@@ -52,11 +52,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jayverstraete/npm-exists.git"
+    "url": "git+https://github.com/jayF0x/npm-exists.git"
   },
-  "homepage": "https://github.com/jayverstraete/npm-exists#readme",
+  "homepage": "https://github.com/jayF0x/npm-exists#readme",
   "bugs": {
-    "url": "https://github.com/jayverstraete/npm-exists/issues"
+    "url": "https://github.com/jayF0x/npm-exists/issues"
   },
   "engines": {
     "node": ">=18"
