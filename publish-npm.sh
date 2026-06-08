@@ -65,9 +65,8 @@ bun test
 
 # ── publish ───────────────────────────────────────────────────────────────────
 echo "Publishing to npm..."
-_TOK=$(grep 'npmjs.org' "$TMPRC" | sed 's/.*_authToken=//')
-BUN_AUTH_TOKEN="$_TOK" bun publish --access public
-unset _TOK
+
+NPM_CONFIG_USERCONFIG="$TMPRC" npm publish --access public --ignore-scripts
 
 # ── commit + tag + push ───────────────────────────────────────────────────────
 git add package.json bun.lock
