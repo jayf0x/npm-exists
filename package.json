@@ -27,7 +27,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "release": "bash publish-npm.sh",
-    "prepublishOnly": "bun run build && bun test"
+    "prepublishOnly": "bun run build && bun run test"
   },
   "keywords": [
     "npm",
